@@ -52,7 +52,7 @@ form.addEventListener('submit', (e) => {
 });
 const name = localStorage.getItem('username');
 if (!name) {
-    window.location.href = '/'; 
+    window.location.href = '/login.html'; 
 } else {
     socket.emit('new-user-joined', name);
 }
@@ -73,10 +73,6 @@ socket.on('left', name => {
 
 socket.on('user-joined', (name) => {
     append(`${name} joined the chat`, 'user-joined');
-});
-
-socket.on('left', (name) => {
-    append(`${name} left the chat`, 'user-joined');
 });
 
 
