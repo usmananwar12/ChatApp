@@ -42,5 +42,5 @@ io.on('connection', (socket) => {
 
 
 http.listen(8000, () => {
-    console.log('Server running on http://192.168.18.17:6000');
+    console.log('Server running on http://192.168.18.17:8000');
 });
