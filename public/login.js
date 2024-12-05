@@ -1,7 +1,7 @@
 const loginForm = document.getElementById('login-form');
 const errorMsg = document.getElementById('error-msg');
 
-const UNIVERSAL_PASSWORD = 'ChatAppSecure123';
+const UNIVERSAL_PASSWORD = 'usman123';
 
 loginForm.addEventListener('submit', (e) => {
     e.preventDefault(); 
