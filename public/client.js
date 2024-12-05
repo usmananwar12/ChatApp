@@ -70,13 +70,6 @@ socket.on('left', name => {
     append(`${name} left the chat`, 'user-joined');
 })
 
-
-socket.on('user-joined', (name) => {
-    append(`${name} joined the chat`, 'user-joined');
-});
-
-
-
 const fileInput = document.getElementById('file-input');
 const attachmentBtn = document.getElementById('attachment-btn');
 
@@ -170,9 +163,7 @@ logoutBtn.addEventListener('click', () => {
     localStorage.removeItem('username');
     socket.emit('disconnect1');
     
-    //if (window.close) {
-      //  window.close(); 
-    //} else {
-        window.location.href = 'https://www.google.com'; 
-    //}
+    
+    window.location.href = '/login.html'; 
+    
 });
