@@ -1,0 +1,39 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="logo.png" type="image/png">
+    <title>Chat App</title>
+    <script defer src="http://192.168.18.17:8000/socket.io/socket.io.js"></script>
+
+    <script defer src="client.js"></script>
+    <link rel="stylesheet" href="style.css">
+    
+</head>
+<body>
+    <nav>
+        <img class="logo" src="chatapp.png" alt="Chat App Logo">
+        <button type="exit" id="logout-btn" class="logout-btn">Logout</button>
+    </nav>
+    <div class="chat-container">
+        <div class="chat-box">
+            
+        </div>
+        
+        <form id="message-input" class="message-input" enctype="multipart/form-data">
+            <button id="attachment-btn" title="Attach a file">
+                <img src="btn.png" alt="Attach" />
+            </button>
+            
+            <input type="file" id="file-input" style="display: none;">
+            <input type="text" id="message" placeholder="Type a message...">
+            <button type="submit" id="send-btn">Send</button>
+        </form>
+        
+        
+    </div>
+</body>
+</html>
+
