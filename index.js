@@ -1,18 +1,24 @@
-
 const express = require('express');
 const app = express();
 const http = require('http').Server(app);
 const io = require('socket.io')(http, {
     cors: {
-        origin: "*",  
-        methods: ["GET", "POST"]  
+        origin: "*",
+        methods: ["GET", "POST"]
     }
 });
 
-app.use(express.static('public')); 
+app.use(express.static('public'));
+
+app.get('/', (req, res) => {
+    res.sendFile(__dirname + '/public/login.html');
+});
+
+app.get('/chat', (req, res) => {
+    res.sendFile(__dirname + '/public/index.html');
+});
 
 const user = {};
-
 
 io.on('connection', (socket) => {
     socket.on('new-user-joined', (name) => {
@@ -39,7 +45,6 @@ io.on('connection', (socket) => {
         delete user[socket.id];
     });
 });
-
 
 http.listen(8000, () => {
     console.log('Server running on http://192.168.18.17:8000');

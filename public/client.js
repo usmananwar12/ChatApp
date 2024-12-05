@@ -8,12 +8,10 @@ var join_left = new Audio('Leave.mp3');
 
 
 const append = (message, position, sender) => {
-    // new message
     const messageElement = document.createElement('div');
     messageElement.classList.add('message');
     messageElement.classList.add(position); 
 
-    // Add sender name
     if (sender) {
         const senderName = document.createElement('div');
         senderName.classList.add('sender-name');
@@ -21,21 +19,17 @@ const append = (message, position, sender) => {
         messageElement.append(senderName); 
     }
 
-    // Create the paragraph for the message text
     const messageText = document.createElement('p');
     messageText.innerText = message;
     messageElement.append(messageText);
 
-    // Create the timestamp for the message
     const timestamp = document.createElement('span');
     timestamp.classList.add('timestamp');
     timestamp.innerText = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); // This will show the time as HH:MM AM/PM
     messageElement.append(timestamp);
 
-    // Append the new message to the message container
     messageContainer.append(messageElement);
 
-    // Scroll to the bottom of the chat
     messageContainer.scrollTop = messageContainer.scrollHeight;
     if(position == 'user-joined'){        
         join_left.play();
@@ -46,22 +40,23 @@ const append = (message, position, sender) => {
 };
 
 form.addEventListener('submit', (e) => {
-    e.preventDefault(); // Prevent default form submission behavior
+    e.preventDefault(); 
 
-    const message = messageInput.value.trim(); // Trim whitespace from the input
+    const message = messageInput.value.trim(); 
 
     if (message) {
-        append(message, 'outgoing', 'You'); // Append the message with sender name 'You'
-        socket.emit('send', message); // Emit the message to the server
-        messageInput.value = ''; // Clear the input after sending
+        append(message, 'outgoing', 'You'); 
+        socket.emit('send', message); 
+        messageInput.value = ''; 
     }
 });
-
-const name = prompt("Enter your name to join");
-if (length.name < 1){
-    name = prompt("please enter your name to join!!!")
+const name = localStorage.getItem('username');
+if (!name) {
+    window.location.href = '/'; 
+} else {
+    socket.emit('new-user-joined', name);
 }
-socket.emit('new-user-joined', name);
+
 
 socket.on('user-joined', (name) => {
     append(`${name} joined the chat`, 'user-joined');
@@ -99,7 +94,7 @@ fileInput.addEventListener('change', () => {
             socket.emit('send-file', { name: file.name, data: reader.result, type: file.type });
             append(`You sent a file: ${file.name}`, 'outgoing', 'You');
         };
-        reader.readAsDataURL(file); // Convert file to Base64 for transport
+        reader.readAsDataURL(file); 
     }
 });
 
@@ -108,45 +103,39 @@ socket.on('receive-file', (file) => {
     const messageElement = document.createElement('div');
     messageElement.classList.add('message', 'incoming');
 
-    // Sender's Name
     const senderName = document.createElement('div');
     senderName.classList.add('sender-name');
     senderName.innerText = file.sender;
     messageElement.append(senderName);
 
     if (file.type.startsWith('image/')) {
-        // Image Preview
         const img = document.createElement('img');
-        img.src = file.data; // Base64 data URL for image
+        img.src = file.data; 
         img.alt = file.name;
-        img.style.maxWidth = '100%'; // Image styling
+        img.style.maxWidth = '100%'; 
         messageElement.append(img);
 
-        // Download Link for Image
         const downloadLink = document.createElement('a');
         downloadLink.href = file.data;
         downloadLink.download = file.name;
         downloadLink.innerText = 'Download Image';
         messageElement.append(downloadLink);
     } else if (file.type === 'text/plain') {
-        // Text Preview (Base64 decoding)
         const textPreview = document.createElement('p');
-        const decodedText = atob(file.data.split(',')[1]); // Decode base64 text
+        const decodedText = atob(file.data.split(',')[1]); 
         
         textPreview.innerText = decodedText.length > 100
             ? decodedText.substring(0, 100) + '...'
             : decodedText;
-        textPreview.style.whiteSpace = 'pre-wrap'; // Maintain formatting
+        textPreview.style.whiteSpace = 'pre-wrap'; 
         messageElement.append(textPreview);
 
-        // Download Link for Text File
         const downloadLink = document.createElement('a');
         downloadLink.href = file.data;
         downloadLink.download = file.name;
         downloadLink.innerText = 'Download Text File';
         messageElement.append(downloadLink);
     } else {
-        // For other file types (audio, pdf, etc.)
         const downloadLink = document.createElement('a');
         downloadLink.href = file.data;
         downloadLink.download = file.name;
@@ -159,9 +148,8 @@ socket.on('receive-file', (file) => {
 });
 
 //just for the enter button
-// Handle form submission
 form.addEventListener('submit', (e) => {
-    e.preventDefault(); // Prevent default form submission
+    e.preventDefault(); 
     const message = messageInput.value.trim();
     if (message) {
         append(message, 'outgoing', 'You');
@@ -173,8 +161,8 @@ form.addEventListener('submit', (e) => {
 // Prevent Enter from triggering file input when message is focused
 messageInput.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') {
-        e.preventDefault(); // Prevent default to avoid any button trigger
-        form.dispatchEvent(new Event('submit')); // Manually trigger form submit
+        e.preventDefault(); 
+        form.dispatchEvent(new Event('submit')); 
     }
 });
 

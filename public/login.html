@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8">    
+    <script defer src="http://192.168.18.17:8000/socket.io/socket.io.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login | Chat App</title>
     <link rel="stylesheet" href="login_style.css">
+    <script defer src="login.js"></script>
 </head>
 <body>
     <div class="login-container">
@@ -16,30 +18,10 @@
             </div>
             <div class="form-group">
                 <label for="password">Password</label>
-                <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                <input type="password" id="password" name="password" placeholder="Enter the universal password" required>
             </div>
+            <p id="error-msg" style="color:red; display:none;">Invalid Password! Please try again.</p>
             <button type="submit" id="login-btn">Log In</button>
-            <p>Don't have an account? <a href="#" id="create-account-link">Create Account</a></p>
-        </form>
-
-        <!-- Registration Form -->
-        <form id="register-form" class="register-form" style="display: none;">
-            <h2>Create Account</h2>
-            <div class="form-group">
-                <label for="new-username">Username</label>
-                <input type="text" id="new-username" name="new-username" placeholder="Choose a username" required>
-            </div>
-            <div class="form-group">
-                <label for="new-password">Password</label>
-                <input type="password" id="new-password" name="new-password" placeholder="Create a password" required>
-            </div>
-            <div class="form-group">
-                <label for="confirm-password">Confirm Password</label>
-                <input type="password" id="confirm-password" name="confirm-password" placeholder="Confirm your password" required>
-            </div>
-            <button type="submit" id="register-btn">Sign Up</button>
-            <p>Already have an account? <a href="#" id="login-link">Log In</a></p>
-            
         </form>
     </div>
 </body>
