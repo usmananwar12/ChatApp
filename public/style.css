@@ -8,19 +8,76 @@ body {
 
 /* Navbar */
 nav {
-    background-color: #4CAF50;
-    padding: 10px;
+    background-color: #333; /* Darker background for contrast */
+    padding: 10px 20px; /* Add more padding for a premium feel */
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Add shadow for depth */
+    position: sticky;
+    top: 0; /* Stick navbar to the top */
+    z-index: 1000; /* Ensure navbar stays on top */
 }
 
+/* Logo */
 .logo {
-    display: block;
-    margin: auto;
-    width: 95px;
-    height: 80px;
+    height: 50px; /* Resize logo for consistency */
+    margin-right: 20px;
 }
 
+/* Navbar Buttons */
+.nav-buttons {
+    display: flex;
+    gap: 15px;
+}
+
+.nav-btn {
+    background-color: transparent;
+    color: white;
+    border: 2px solid #4CAF50; /* Outline-style button */
+    padding: 8px 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+}
+
+.nav-btn:hover {
+    background-color: #4CAF50;
+    color: white;
+    border-color: #45a049;
+}
+
+/* Logout Button */
+.logout-btn {
+    background-color: transparent;
+    color: white;
+    border: 2px solid #ff4c4c;
+    padding: 8px 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+}
+
+.logout-btn:hover {
+    background-color: #ff4c4c;
+    color: white;
+}
+
+/* Responsive Navbar for Mobile */
+@media (max-width: 768px) {
+    nav {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .nav-buttons {
+        flex-direction: column;
+        gap: 10px;
+        margin-top: 10px;
+    }
+}
 
 /* Chat Container */
 .chat-container {
@@ -100,11 +157,11 @@ nav {
     background: transparent;
     color: #555;
     font-style: italic;
-    text-align: center; /* Ensure text is centered */
-    margin: 10px auto; /* Center horizontally and add spacing */
+    text-align: center;
+    margin: 10px auto;
     font-size: 14px;
-    width: 100%; /* Ensure it takes the full width */
-    line-height: 1.5; /* Add line spacing if needed */
+    width: 100%;
+    line-height: 1.5;
 }
 
 /* Message Input */
@@ -154,7 +211,7 @@ nav {
     background-color: #999;
 }
 
-
+/* Attachment Button */
 #attachment-btn {
     background: none;
     border: none;
@@ -173,39 +230,12 @@ nav {
     opacity: 0.5; 
 }
 
-nav {
-    background-color: #4CAF50;
-    padding: 10px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+/* Pages */
+.page {
+    display: none; /* All pages are hidden by default */
+    padding: 20px;
 }
 
-.logout-btn {
-    background-color: #ff4c4c;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 14px;
-}
-
-.logout-btn:hover {
-    background-color: #ff1a1a;
-}
-
-
-.message img {
-    max-width: 300px;
-    border-radius: 10px;
-    margin: 5px 0;
-}
-
-.message .preview {
-    opacity: 0.7; /* To indicate it's a preview */
-}
-
-.message .preview:hover {
-    opacity: 1; /* Remove preview effect on hover */
+.page:not(.hidden) {
+    display: block; /* Show only active pages */
 }

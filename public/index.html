@@ -1,38 +1,54 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="iacon" href="logo.png" type="image/png">
+    <link rel="icon" href="chatapp.png" type="image/png">
     <title>Chat App</title>
-    <script defer src="http://localhost:8000/socket.io/socket.io.js"></script>
+    <script defer src="http://192.168.18.17:8000/socket.io/socket.io.js"></script>
     <script defer src="client.js"></script>
+    <script defer src="nav.js"></script> <!-- Script for page navigation -->
     <link rel="stylesheet" href="style.css">
-    
 </head>
 <body>
     <nav>
         <img class="logo" src="chatapp.png" alt="Chat App Logo">
+        <div class="nav-buttons">
+            <button class="nav-btn" data-page="home">Home</button>
+            <button class="nav-btn" data-page="group-chat">Group Chat</button>
+            <button class="nav-btn" data-page="participants">Participants</button>
+        </div>
         <button type="exit" id="logout-btn" class="logout-btn">Logout</button>
     </nav>
-    <div class="chat-container">
-        <div class="chat-box">
-            
+
+    <!-- Pages -->
+    <div id="home-page" class="page">
+        <h1>Welcome to the Chat App</h1>
+        <p>This is the home page.</p>
+    </div>
+
+    <div id="group-chat-page" class="page hidden">
+        <div class="chat-container">
+            <div class="chat-box"></div>
+            <form id="message-input" class="message-input" enctype="multipart/form-data">
+                <button id="attachment-btn" title="Attach a file">
+                    <img src="btn.png" alt="Attach" />
+                </button>
+                <input type="file" id="file-input" style="display: none;">
+                <input type="text" id="message" placeholder="Type a message...">
+                <button type="submit" id="send-btn">Send</button>
+            </form>
         </div>
-        
-        <form id="message-input" class="message-input" enctype="multipart/form-data">
-            <button id="attachment-btn" title="Attach a file">
-                <img src="btn.png" alt="Attach" />
-            </button>
-            
-            <input type="file" id="file-input" style="display: none;">
-            <input type="text" id="message" placeholder="Type a message...">
-            <button type="submit" id="send-btn">Send</button>
-        </form>
-        
-        
+    </div>
+
+    <div id="participants-page" class="page hidden">
+        <h1>Participants</h1>
+        <ul id="participants-list">
+            <!-- Example participants -->
+            <li>User 1</li>
+            <li>User 2</li>
+            <li>User 3</li>
+        </ul>
     </div>
 </body>
 </html>
-
