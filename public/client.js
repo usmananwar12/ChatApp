@@ -62,7 +62,7 @@ socket.on('user-joined', (name) => {
     append(`${name} joined the chat`, 'user-joined');
 });
 
-socket.on('recieve', (data) => {
+socket.on('receive', (data) => {
     append(data.message, 'incoming', data.name); 
 });
 
@@ -166,4 +166,157 @@ logoutBtn.addEventListener('click', () => {
     
     window.location.href = '/login.html'; 
     
+});
+
+
+let currentChatUser = null; // Track the current user in DM
+
+const participantsList = document.getElementById('participants-list');
+const dmChatbox = document.getElementById('dm-chatbox');
+const dmUsername = document.getElementById('dm-username');
+const dmChatMessages = document.getElementById('dm-chat-messages');
+const dmMessageInput = document.getElementById('dm-message');
+const dmSendBtn = document.getElementById('dm-send-btn');
+
+// Update participants when the server sends the list
+socket.on('update-participants', (participants) => {
+    participantsList.innerHTML = ''; // Clear the list
+    participants.forEach((participant) => {
+        const participantButton = document.createElement('button');
+        participantButton.className = 'participant-btn';
+        participantButton.innerText = participant;
+        participantButton.addEventListener('click', () => {
+            openDM(participant);
+        });
+        participantsList.appendChild(participantButton);
+    });
+});
+
+// Open DM chatbox
+function openDM(participant) {
+    currentChatUser = participant; // Set current user
+    dmUsername.innerText = `Chat with ${participant}`; // Update header
+    dmChatbox.classList.remove('hidden'); // Show chatbox
+    dmChatMessages.innerHTML = ''; // Clear chat messages for this user
+}
+
+// Handle DM message send
+dmSendBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    const message = dmMessageInput.value.trim();
+    if (message) {
+        appendDM(message, 'outgoing');
+        socket.emit('dm-message', { to: currentChatUser, message });
+        dmMessageInput.value = ''; // Clear input
+    }
+});
+
+// Append DM message
+function appendDM(message, position, sender = 'You') {
+    const messageElement = document.createElement('div');
+    messageElement.classList.add('message', position);
+
+    const messageText = document.createElement('p');
+    messageText.innerText = message;
+    messageElement.appendChild(messageText);
+
+    const timestamp = document.createElement('span');
+    timestamp.classList.add('timestamp');
+    timestamp.innerText = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    messageElement.appendChild(timestamp);
+
+    dmChatMessages.appendChild(messageElement);
+    dmChatMessages.scrollTop = dmChatMessages.scrollHeight;
+}
+
+// Receive DM messages
+socket.on('dm-message', ({ from, message }) => {
+    if (from === currentChatUser) {
+        appendDM(message, 'incoming', from);
+    } else {
+        alert(`New DM from ${from}`); // Notify for new message
+    }
+});
+
+const DMfileInput = document.getElementById('dm-file-input');
+const DMattachmentBtn = document.getElementById('dm-attachment-btn');
+
+// Trigger file input when attachment button is clicked
+DMattachmentBtn.addEventListener('click', () => DMfileInput.click());
+
+// Handle DM file upload
+DMfileInput.addEventListener('change', () => {
+    if (!currentChatUser) {
+        alert('Please select a user to chat with.');
+        return;
+    }
+
+    const file = DMfileInput.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = () => {
+            // Emit the file to the server with recipient details
+            socket.emit('dm-send-file', {
+                to: currentChatUser,
+                name: file.name,
+                data: reader.result,
+                type: file.type,
+            });
+            appendDM(`You sent a file: ${file.name}`, 'outgoing');
+        };
+        reader.readAsDataURL(file); // Read file as base64
+    }
+});
+
+// Handle received DM file
+socket.on('dm-receive-file', (file) => {
+    if (file.sender === currentChatUser) {
+        const messageElement = document.createElement('div');
+        messageElement.classList.add('message', 'incoming');
+
+        const senderName = document.createElement('div');
+        senderName.classList.add('sender-name');
+        senderName.innerText = file.sender;
+        messageElement.appendChild(senderName);
+
+        if (file.type.startsWith('image/')) {
+            const img = document.createElement('img');
+            img.src = file.data;
+            img.alt = file.name;
+            img.style.maxWidth = '100%';
+            messageElement.appendChild(img);
+
+            const downloadLink = document.createElement('a');
+            downloadLink.href = file.data;
+            downloadLink.download = file.name;
+            downloadLink.innerText = 'Download Image';
+            messageElement.appendChild(downloadLink);
+        } else if (file.type === 'text/plain') {
+            const textPreview = document.createElement('p');
+            const decodedText = atob(file.data.split(',')[1]);
+
+            textPreview.innerText = decodedText.length > 100
+                ? decodedText.substring(0, 100) + '...'
+                : decodedText;
+            textPreview.style.whiteSpace = 'pre-wrap';
+            messageElement.appendChild(textPreview);
+
+            const downloadLink = document.createElement('a');
+            downloadLink.href = file.data;
+            downloadLink.download = file.name;
+            downloadLink.innerText = 'Download Text File';
+            messageElement.appendChild(downloadLink);
+        } else {
+            const downloadLink = document.createElement('a');
+            downloadLink.href = file.data;
+            downloadLink.download = file.name;
+            downloadLink.innerText = `Download ${file.name}`;
+            messageElement.appendChild(downloadLink);
+        }
+
+        dmChatMessages.appendChild(messageElement);
+        dmChatMessages.scrollTop = dmChatMessages.scrollHeight;
+    } else {
+        alert(`New file received from ${file.sender}`);
+    }
 });
