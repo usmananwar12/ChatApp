@@ -8,7 +8,7 @@ const io = require('socket.io')(http, {
     }
 });
 
-const users = {}; // Object to track connected users
+const users = {}; 
 
 app.use(express.static('public'));
 
@@ -29,6 +29,7 @@ io.on('connection', (socket) => {
     });
 
     socket.on('send', (message) => {
+        console.log(message);
         socket.broadcast.emit('receive', { message: message, name: users[socket.id] });
     });
 

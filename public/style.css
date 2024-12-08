@@ -327,3 +327,52 @@ nav {
 #dm-attachment-btn:hover {
     opacity: 0.5; 
 }
+
+/* Welcome Page Styles */
+.welcome-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 80vh;
+    background: linear-gradient(135deg, #4CAF50, #81C784); /* Add a gradient for modern look */
+    color: white;
+    text-align: center;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    padding: 20px;
+}
+
+.welcome-message {
+    font-size: 36px;
+    font-weight: bold;
+    margin: 0;
+}
+
+.welcome-subtext {
+    font-size: 18px;
+    margin: 10px 0 20px;
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.welcome-image {
+    max-width: 300px;
+    margin-top: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Responsive Welcome Page */
+@media (max-width: 768px) {
+    .welcome-message {
+        font-size: 28px;
+    }
+
+    .welcome-subtext {
+        font-size: 16px;
+    }
+
+    .welcome-image {
+        max-width: 250px;
+    }
+}

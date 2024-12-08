@@ -39,17 +39,39 @@ const append = (message, position, sender) => {
     }
 };
 
+const key = 'chatKey';
+
+function encrypt(text) {
+    let encrypted = '';
+    for (let i = 0; i < text.length; i++) {
+        encrypted += String.fromCharCode(text.charCodeAt(i) ^ key.charCodeAt(i % key.length));
+    }
+    return btoa(encrypted); 
+}
+
+function decrypt(encodedText) {
+    const text = atob(encodedText);
+    let decrypted = '';
+    for (let i = 0; i < text.length; i++) {
+        decrypted += String.fromCharCode(text.charCodeAt(i) ^ key.charCodeAt(i % key.length));
+    }
+    return decrypted;
+}
+
+
 form.addEventListener('submit', (e) => {
     e.preventDefault(); 
 
     const message = messageInput.value.trim(); 
 
     if (message) {
+        const encryptedMessage = encrypt(message); 
         append(message, 'outgoing', 'You'); 
-        socket.emit('send', message); 
+        socket.emit('send', encryptedMessage);
         messageInput.value = ''; 
     }
 });
+
 const name = localStorage.getItem('username');
 if (!name) {
     window.location.href = '/login.html'; 
@@ -63,8 +85,10 @@ socket.on('user-joined', (name) => {
 });
 
 socket.on('receive', (data) => {
-    append(data.message, 'incoming', data.name); 
+    const decryptedMessage = decrypt(data.message); 
+    append(decryptedMessage, 'incoming', data.name); 
 });
+
 
 socket.on('left', name => {
     append(`${name} left the chat`, 'user-joined');
@@ -320,3 +344,12 @@ socket.on('dm-receive-file', (file) => {
         alert(`New file received from ${file.sender}`);
     }
 });
+
+// Check if username exists in localStorage
+const username = localStorage.getItem('username');
+if (username) {
+    document.getElementById('username-display').textContent = username;
+} else {
+    // Redirect to login if username isn't set
+    window.location.href = '/login.html';
+}
