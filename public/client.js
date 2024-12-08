@@ -343,7 +343,28 @@ socket.on('dm-receive-file', (file) => {
     } else {
         alert(`New file received from ${file.sender}`);
     }
+    socket.on('file-updated', () => {
+        fetchFiles(); // Refresh file list
+    });
+    
 });
+function fetchFiles() {
+    fetch('/p2p-files')
+        .then((res) => res.json())
+        .then((files) => {
+            fileList.innerHTML = ''; // Clear existing list
+            files.forEach((file) => {
+                const listItem = document.createElement('li');
+                const link = document.createElement('a');
+                link.href = `/p2p-files/${file}`;
+                link.textContent = file;
+                link.download = file;
+                listItem.appendChild(link);
+                fileList.appendChild(listItem);
+            });
+        })
+        .catch((err) => console.error('Error fetching files:', err));
+}
 
 // Check if username exists in localStorage
 const username = localStorage.getItem('username');
@@ -352,4 +373,56 @@ if (username) {
 } else {
     // Redirect to login if username isn't set
     window.location.href = '/login.html';
+}
+
+
+// File management elements
+const addFileBtn = document.getElementById('add-file-btn');
+const fileUpload = document.getElementById('file-upload');
+const fileList = document.getElementById('file-list');
+
+// Fetch and display files from the "p2p-files" folder
+function fetchFiles() {
+    fetch('/p2p-files')
+        .then((res) => res.json())
+        .then((files) => {
+            fileList.innerHTML = ''; // Clear existing list
+            files.forEach((file) => {
+                const listItem = document.createElement('li');
+                const link = document.createElement('a');
+                link.href = `/p2p-files/${file}`;
+                link.textContent = file;
+                link.download = file;
+                listItem.appendChild(link);
+                fileList.appendChild(listItem);
+            });
+        });
+}
+
+// Trigger file input on "Add File" button click
+addFileBtn.addEventListener('click', () => fileUpload.click());
+
+// Handle file upload
+fileUpload.addEventListener('change', () => {
+    const file = fileUpload.files[0];
+    if (file) {
+        const formData = new FormData();
+        formData.append('file', file);
+
+        fetch('/upload-file', {
+            method: 'POST',
+            body: formData,
+        })
+            .then((res) => res.json())
+            .then(() => {
+                alert('File uploaded successfully');
+                fetchFiles(); // Refresh the file list
+            })
+            .catch((err) => console.error('Error uploading file:', err));
+    }
+});
+
+// Fetch files when the home page loads
+if (document.getElementById('home-page')) {
+    fetchFiles();
 }
