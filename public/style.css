@@ -372,3 +372,28 @@ nav {
         max-width: 250px;
     }
 }
+.file-management {
+    margin-top: 20px;
+}
+
+.file-management h2 {
+    margin-bottom: 10px;
+}
+
+#file-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+#file-list li {
+    margin-bottom: 5px;
+}
+
+#file-list a {
+    text-decoration: none;
+    color: #007bff;
+}
+
+#file-list a:hover {
+    text-decoration: underline;
+}

@@ -27,10 +27,18 @@
             <h1 class="welcome-message">
                 Hello, <span id="username-display"></span>!
             </h1>
-            <p class="welcome-subtext">Welcome to ChatApp. Connect, chat, and enjoy!</p>
-            <img class="welcome-image" src="chatapp-illustration.png" alt="Chat Illustration">
+            <p class="welcome-subtext">Welcome to ChatApp. Manage and access your files below:</p>
+    
+            <!-- File Management Section -->
+            <div class="file-management">
+                <h2>Your Files</h2>
+                <button id="add-file-btn">Add File</button>
+                <input type="file" id="file-upload" style="display: none;">
+                <ul id="file-list"></ul>
+            </div>
         </div>
     </div>
+    
     
     <div id="group-chat-page" class="page hidden">
         <div class="chat-container">
