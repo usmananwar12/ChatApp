@@ -2,7 +2,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const buttons = document.querySelectorAll(".nav-btn");
     const pages = document.querySelectorAll(".page");
 
-    // Add event listener for each navigation button
     buttons.forEach(button => {
         button.addEventListener("click", () => {
             const targetPage = button.dataset.page;
