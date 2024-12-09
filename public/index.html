@@ -7,7 +7,7 @@
     <title>Chat App</title>
     <script defer src="http://192.168.18.17:8000/socket.io/socket.io.js"></script>
     <script defer src="client.js"></script>
-    <script defer src="nav.js"></script> <!-- Script for page navigation -->
+    <script defer src="nav.js"></script> 
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -28,8 +28,6 @@
                 Hello, <span id="username-display"></span>!
             </h1>
             <p class="welcome-subtext">Welcome to ChatApp. Manage and access your files below:</p>
-    
-            <!-- File Management Section -->
             <div class="file-management">
                 <h2>Your Files</h2>
                 <button id="add-file-btn">Add File</button>
@@ -56,7 +54,7 @@
 
     <div id="participants-page" class="page hidden">
         <div class="participants-container">
-            <!-- Chatbox -->
+            
             <div class="dm-chatbox hidden" id="dm-chatbox">
                 <div class="dm-chat-header">
                     <span id="dm-username"></span>

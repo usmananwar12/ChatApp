@@ -18,7 +18,7 @@ app.get('/p2p-files', (req, res) => {
             console.error('Error reading files:', err);
             res.status(500).json({ error: 'Error reading files' });
         } else {
-            res.json(files); // Return file list as JSON
+            res.json(files); 
         }
     });
 });
@@ -34,9 +34,9 @@ app.get('/chat', (req, res) => {
 io.on('connection', (socket) => {
     socket.on('new-user-joined', (name) => {
         console.log("New User joined: ", name);
-        users[socket.id] = name; // Store user by socket ID
-        socket.broadcast.emit('user-joined', name); // Notify others
-        io.emit('update-participants', Object.values(users)); // Send updated list to all
+        users[socket.id] = name; 
+        socket.broadcast.emit('user-joined', name); 
+        io.emit('update-participants', Object.values(users)); 
     });
 
     socket.on('send', (message) => {
@@ -50,7 +50,6 @@ io.on('connection', (socket) => {
         fs.writeFileSync(filePath, Buffer.from(base64Data, 'base64'));
     };
     
-    // Save group chat files
     socket.on('send-file', (file) => {
         saveFile(file); 
         socket.broadcast.emit('receive-file', {
@@ -66,9 +65,9 @@ io.on('connection', (socket) => {
     socket.on('disconnect', () => {
         const name = users[socket.id];
         if (name) {
-            delete users[socket.id]; // Remove user
-            socket.broadcast.emit('left', name); // Notify others
-            io.emit('update-participants', Object.values(users)); // Send updated list to all
+            delete users[socket.id]; 
+            socket.broadcast.emit('left', name); 
+            io.emit('update-participants', Object.values(users)); 
         }
     });
 
@@ -80,7 +79,7 @@ io.on('connection', (socket) => {
     });
     
     socket.on('dm-send-file', (file) => {
-    saveFile(file); // Save file to p2p-files folder
+    saveFile(file);
     const recipientSocket = Object.keys(users).find(id => users[id] === file.to);
     if (recipientSocket) {
         io.to(recipientSocket).emit('dm-receive-file', {
@@ -98,16 +97,13 @@ const path = require('path');
 const fs = require('fs');
 const multer = require('multer');
 
-// Create "p2p-files" folder if it doesn't exist
 const p2pFolder = path.join(__dirname, 'public/p2p-files');
 if (!fs.existsSync(p2pFolder)) {
     fs.mkdirSync(p2pFolder);
 }
 
-// Serve files from the "p2p-files" folder
 app.use('/p2p-files', express.static(p2pFolder));
 
-// Configure file upload using multer
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, p2pFolder);
@@ -118,7 +114,6 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-// API Endpoint to upload a file
 app.post('/upload-file', upload.single('file'), (req, res) => {
     res.json({ message: 'File uploaded successfully', file: req.file.filename });
 });

@@ -160,7 +160,7 @@ socket.on('receive-file', (file) => {
     messageContainer.scrollTop = messageContainer.scrollHeight;
 });
 
-//just for the enter button
+// enter se msg send ho jai
 form.addEventListener('submit', (e) => {
     e.preventDefault(); 
     const message = messageInput.value.trim();
@@ -171,7 +171,7 @@ form.addEventListener('submit', (e) => {
     }
 });
 
-// Prevent Enter from triggering file input when message is focused
+// enter se msg send ho jai in dm
 messageInput.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') {
         e.preventDefault(); 
@@ -193,7 +193,7 @@ logoutBtn.addEventListener('click', () => {
 });
 
 
-let currentChatUser = null; // Track the current user in DM
+let currentChatUser = null; 
 
 const participantsList = document.getElementById('participants-list');
 const dmChatbox = document.getElementById('dm-chatbox');
@@ -202,9 +202,8 @@ const dmChatMessages = document.getElementById('dm-chat-messages');
 const dmMessageInput = document.getElementById('dm-message');
 const dmSendBtn = document.getElementById('dm-send-btn');
 
-// Update participants when the server sends the list
 socket.on('update-participants', (participants) => {
-    participantsList.innerHTML = ''; // Clear the list
+    participantsList.innerHTML = ''; 
     participants.forEach((participant) => {
         const participantButton = document.createElement('button');
         participantButton.className = 'participant-btn';
@@ -216,26 +215,23 @@ socket.on('update-participants', (participants) => {
     });
 });
 
-// Open DM chatbox
 function openDM(participant) {
-    currentChatUser = participant; // Set current user
-    dmUsername.innerText = `Chat with ${participant}`; // Update header
-    dmChatbox.classList.remove('hidden'); // Show chatbox
-    dmChatMessages.innerHTML = ''; // Clear chat messages for this user
+    currentChatUser = participant;
+    dmUsername.innerText = `Chat with ${participant}`; 
+    dmChatbox.classList.remove('hidden'); 
+    dmChatMessages.innerHTML = ''; 
 }
 
-// Handle DM message send
 dmSendBtn.addEventListener('click', (e) => {
     e.preventDefault();
     const message = dmMessageInput.value.trim();
     if (message) {
         appendDM(message, 'outgoing');
         socket.emit('dm-message', { to: currentChatUser, message });
-        dmMessageInput.value = ''; // Clear input
+        dmMessageInput.value = ''; 
     }
 });
 
-// Append DM message
 function appendDM(message, position, sender = 'You') {
     const messageElement = document.createElement('div');
     messageElement.classList.add('message', position);
@@ -253,22 +249,20 @@ function appendDM(message, position, sender = 'You') {
     dmChatMessages.scrollTop = dmChatMessages.scrollHeight;
 }
 
-// Receive DM messages
 socket.on('dm-message', ({ from, message }) => {
     if (from === currentChatUser) {
         appendDM(message, 'incoming', from);
     } else {
-        alert(`New DM from ${from}`); // Notify for new message
+        alert(`New DM from ${from}`);
     }
 });
 
+//necha sara file upload ka lia ha
 const DMfileInput = document.getElementById('dm-file-input');
 const DMattachmentBtn = document.getElementById('dm-attachment-btn');
 
-// Trigger file input when attachment button is clicked
 DMattachmentBtn.addEventListener('click', () => DMfileInput.click());
 
-// Handle DM file upload
 DMfileInput.addEventListener('change', () => {
     if (!currentChatUser) {
         alert('Please select a user to chat with.');
@@ -279,7 +273,6 @@ DMfileInput.addEventListener('change', () => {
     if (file) {
         const reader = new FileReader();
         reader.onload = () => {
-            // Emit the file to the server with recipient details
             socket.emit('dm-send-file', {
                 to: currentChatUser,
                 name: file.name,
@@ -288,11 +281,10 @@ DMfileInput.addEventListener('change', () => {
             });
             appendDM(`You sent a file: ${file.name}`, 'outgoing');
         };
-        reader.readAsDataURL(file); // Read file as base64
+        reader.readAsDataURL(file);
     }
 });
 
-// Handle received DM file
 socket.on('dm-receive-file', (file) => {
     if (file.sender === currentChatUser) {
         const messageElement = document.createElement('div');
@@ -344,7 +336,7 @@ socket.on('dm-receive-file', (file) => {
         alert(`New file received from ${file.sender}`);
     }
     socket.on('file-updated', () => {
-        fetchFiles(); // Refresh file list
+        fetchFiles(); 
     });
     
 });
@@ -352,7 +344,7 @@ function fetchFiles() {
     fetch('/p2p-files')
         .then((res) => res.json())
         .then((files) => {
-            fileList.innerHTML = ''; // Clear existing list
+            fileList.innerHTML = ''; 
             files.forEach((file) => {
                 const listItem = document.createElement('li');
                 const link = document.createElement('a');
@@ -366,27 +358,23 @@ function fetchFiles() {
         .catch((err) => console.error('Error fetching files:', err));
 }
 
-// Check if username exists in localStorage
 const username = localStorage.getItem('username');
 if (username) {
     document.getElementById('username-display').textContent = username;
 } else {
-    // Redirect to login if username isn't set
     window.location.href = '/login.html';
 }
 
 
-// File management elements
 const addFileBtn = document.getElementById('add-file-btn');
 const fileUpload = document.getElementById('file-upload');
 const fileList = document.getElementById('file-list');
 
-// Fetch and display files from the "p2p-files" folder
 function fetchFiles() {
     fetch('/p2p-files')
         .then((res) => res.json())
         .then((files) => {
-            fileList.innerHTML = ''; // Clear existing list
+            fileList.innerHTML = '';
             files.forEach((file) => {
                 const listItem = document.createElement('li');
                 const link = document.createElement('a');
@@ -399,10 +387,9 @@ function fetchFiles() {
         });
 }
 
-// Trigger file input on "Add File" button click
 addFileBtn.addEventListener('click', () => fileUpload.click());
 
-// Handle file upload
+// upload files
 fileUpload.addEventListener('change', () => {
     const file = fileUpload.files[0];
     if (file) {
@@ -416,13 +403,13 @@ fileUpload.addEventListener('change', () => {
             .then((res) => res.json())
             .then(() => {
                 alert('File uploaded successfully');
-                fetchFiles(); // Refresh the file list
+                fetchFiles();
             })
             .catch((err) => console.error('Error uploading file:', err));
     }
 });
 
-// Fetch files when the home page loads
+// loads files
 if (document.getElementById('home-page')) {
     fetchFiles();
 }
