@@ -30,6 +30,13 @@ const append = (message, position, sender) => {
 
     messageContainer.append(messageElement);
 
+    /*const deleteButton = document.createElement('button');
+    deleteButton.textContent = 'Delete';
+    deleteButton.classList.add('delete-btn');
+    deleteButton.addEventListener('click', () => {
+        messageElement.remove();
+    });*/
+
     messageContainer.scrollTop = messageContainer.scrollHeight;
     if(position == 'user-joined'){        
         join_left.play();
